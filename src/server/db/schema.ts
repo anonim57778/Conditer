@@ -2,9 +2,9 @@ import { relations, sql } from "drizzle-orm";
 import {
   index,
   integer,
+  pgEnum,
   pgTableCreator,
   primaryKey,
-  serial,
   text,
   timestamp,
   varchar,
@@ -19,24 +19,19 @@ import { type AdapterAccount } from "next-auth/adapters";
  */
 export const createTable = pgTableCreator((name) => `bliss_${name}`);
 
-export const posts = createTable(
-  "post",
-  {
-    id: serial("id").primaryKey(),
-    name: varchar("name", { length: 256 }),
-    createdById: varchar("createdById", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt", { withTimezone: true }),
-  },
-  (example) => ({
-    createdByIdIdx: index("createdById_idx").on(example.createdById),
-    nameIndex: index("name_idx").on(example.name),
-  })
-);
+export const files = createTable("files", {
+  id: varchar("id", { length: 255 })
+  .notNull()
+  .primaryKey()
+  .$defaultFn(() => crypto.randomUUID()),
+	fileName: varchar("file_name", { length: 255 }).notNull(),
+	fileSize: integer("file_size").notNull(),
+	contentType: varchar("content_type", { length: 255 }).notNull(),
+	objectId: varchar("object_id", { length: 255 }).notNull().unique(),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.notNull()
+		.defaultNow(),
+  });
 
 export const users = createTable("user", {
   id: varchar("id", { length: 255 })
@@ -44,7 +39,8 @@ export const users = createTable("user", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   name: varchar("name", { length: 255 }),
-  email: varchar("email", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  password: varchar("password", { length: 255 }).notNull(),
   emailVerified: timestamp("emailVerified", {
     mode: "date",
     withTimezone: true,
@@ -55,6 +51,22 @@ export const users = createTable("user", {
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
 }));
+
+export const productTypesEnum = pgEnum("product_types_enum", ["DESSERT", "GIFT"]);
+
+export const products = createTable("products", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: varchar("description").notNull(),
+  imageIds: varchar("image_ids", { length: 255 }).array().notNull(),
+  type: productTypesEnum("type").notNull(),
+  priceFor1: integer("price_for_1").notNull(),
+  priceFor4: integer("price_for_4").notNull(),
+  priceFor8: integer("price_for_8").notNull(),
+})
 
 export const accounts = createTable(
   "account",
