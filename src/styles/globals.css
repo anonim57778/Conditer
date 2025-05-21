@@ -4,10 +4,16 @@
 
 h2 {
   @apply font-heading;
+  @apply text-primary;
 }
 
 h1 {
   @apply font-sans;
+  @apply text-primary;
+}
+
+p {
+  @apply text-primary;
 }
 
 @layer base {
