@@ -1,0 +1,69 @@
+"use client";
+
+import { X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "~/components/ui/alert-dialog";
+import { DropdownMenuItem } from "~/components/ui/dropdown-menu";
+import { useToast } from "~/components/ui/use-toast";
+import { api } from "~/trpc/react";
+
+export default function DeleteCategory({
+	id,
+}: {
+	id: string;
+}) {
+	const router = useRouter();
+	const { toast } = useToast();
+
+	const deleteMutation = api.category.delete.useMutation({
+		onSuccess() {
+			toast({
+				title: "Категория успешно удалена",
+			});
+			router.refresh();
+		},
+		onError() {
+			toast({
+				title: "Категория не удалена",
+				description: "Произошла ошибка при удалении категории",
+				variant: "destructive",
+			});
+		},
+	});
+
+	return (
+		<AlertDialog>
+			<AlertDialogTrigger asChild>
+				<DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+					Удалить
+				</DropdownMenuItem>
+			</AlertDialogTrigger>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>Удалить категорию</AlertDialogTitle>
+					<AlertDialogCancel>
+                        <X className="size-6"/>
+                    </AlertDialogCancel>
+				</AlertDialogHeader>
+				<AlertDialogDescription>
+					Вы уверены, что хотите удалить категорию?
+				</AlertDialogDescription>
+				<AlertDialogFooter>
+					<AlertDialogAction className="p-3" onClick={() => deleteMutation.mutate({ id })}>
+						Удалить
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
+	);
+}

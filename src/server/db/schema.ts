@@ -1,5 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  boolean,
   index,
   integer,
   pgEnum,
@@ -10,6 +11,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
+import { z } from "zod";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -45,7 +47,6 @@ export const users = createTable("user", {
     mode: "date",
     withTimezone: true,
   }).default(sql`CURRENT_TIMESTAMP`),
-  image: varchar("image", { length: 255 }),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -53,6 +54,19 @@ export const usersRelations = relations(users, ({ many }) => ({
 }));
 
 export const productTypesEnum = pgEnum("product_types_enum", ["DESSERT", "GIFT"]);
+export const ProductEnumSchema = z.enum(productTypesEnum.enumValues);
+export type ProductEnum = z.infer<typeof ProductEnumSchema>;
+
+export const categories = createTable("categories", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  type: productTypesEnum("type").notNull(),
+  isDeleted: boolean("is_deleted").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+})
 
 export const products = createTable("products", {
   id: varchar("id", { length: 255 })
@@ -63,9 +77,12 @@ export const products = createTable("products", {
   description: varchar("description").notNull(),
   imageIds: varchar("image_ids", { length: 255 }).array().notNull(),
   type: productTypesEnum("type").notNull(),
+  category: varchar("category", { length: 255 }).notNull(),
   priceFor1: integer("price_for_1").notNull(),
   priceFor4: integer("price_for_4").notNull(),
   priceFor8: integer("price_for_8").notNull(),
+  isDeleted: boolean("is_deleted").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 })
 
 export const accounts = createTable(
