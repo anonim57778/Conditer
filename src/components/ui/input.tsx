@@ -68,4 +68,4 @@ const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
 );
 FileInput.displayName = "FileInput";
 
-export { Input }
+export { Input, FileInput };

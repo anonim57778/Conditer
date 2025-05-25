@@ -1,8 +1,9 @@
 import { CategorySchema } from "~/lib/shared/types/category";
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import { categories } from "~/server/db/schema";
+import { categories, productTypesEnum } from "~/server/db/schema";
 import { IdSchema } from "~/lib/shared/types/utils";
 import { and, eq } from "drizzle-orm";
+import { z } from "zod";
 
 
 export const categoryRouter = createTRPCRouter({
@@ -14,9 +15,15 @@ export const categoryRouter = createTRPCRouter({
             })
         }),
     getAll: publicProcedure
-        .query(async ({ ctx }) => {
+        .input(z.object({
+            type: z.enum(productTypesEnum.enumValues).optional()
+        }))
+        .query(async ({ ctx,  input }) => {
             return await ctx.db.query.categories.findMany({
-                where: eq(categories.isDeleted, false)
+                where: and(
+                    eq(categories.isDeleted, false),
+                    input.type ? eq(categories.type, input.type) : undefined
+                )
             })
         }),
     getById: publicProcedure

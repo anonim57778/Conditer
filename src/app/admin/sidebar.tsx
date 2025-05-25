@@ -28,7 +28,7 @@ function AdminSidebarItem({ item }: { item: AdminSidebarT }) {
     const pathname = usePathname();
 
     return (
-        <Link href={item.url} className={cn("flex gap-2 items-center p-2 rounded-2xl transition-all hover:bg-white/10", pathname === item.url ? "bg-white/10" : "")}>
+        <Link href={item.url} className={cn("flex gap-2 items-start p-2 rounded-2xl transition-all hover:bg-white/10", pathname === item.url ? "bg-white/10" : "")}>
             {item.icon}
             <h1 className="text-lg font-bold text-background">{item.title}</h1>
         </Link>

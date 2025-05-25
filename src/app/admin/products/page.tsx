@@ -2,21 +2,21 @@ import { AdminContent, AdminHeader, AdminTitle } from "~/components/admin";
 import { DataTable } from "~/components/ui/data-table";
 import { api } from "~/trpc/server";
 import { columns } from "./columns";
-import CreateUpdateCategory from "./create-update";
+import CreateUpdateProduct from "./create-update";
 
-export default async function AdminCategoryPage() {
+export default async function AdminProductPage() {
 
-    const categories = await api.category.getAll({});
+    const products = await api.product.getAll({});
 
     return (
         <AdminContent>
             <AdminHeader>
-                <AdminTitle>Категории</AdminTitle>
+                <AdminTitle>Продукты</AdminTitle>
                 <div className="flex items-center gap-2">
-                    <CreateUpdateCategory/>
+                    <CreateUpdateProduct/>
                 </div>
             </AdminHeader>
-            <DataTable columns={columns} data={categories} />
+            <DataTable columns={columns} data={products} />
         </AdminContent>
     );
 }

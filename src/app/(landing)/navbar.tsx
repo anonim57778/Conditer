@@ -8,15 +8,15 @@ export default function Navbar() {
     const menu = [
         {
             name: "Десерты",
-            url: "products/desserts"
+            url: "/products/dessert"
         },
         {
             name: "Подарочные наборы",
-            url: "products/gifts"
+            url: "/products/gift"
         },
         {
             name: "Контакты",
-            url: "contacts"
+            url: "/contacts"
         }
     ]
 

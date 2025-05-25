@@ -10,7 +10,7 @@ import {
 import { files } from "~/server/db/schema";
 
 export const fileRouter = createTRPCRouter({
-	create: protectedProcedure
+	create: publicProcedure
 		.input(FileSchema)
 		.mutation(async ({ ctx, input }) => {
 			try {

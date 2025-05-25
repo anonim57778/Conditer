@@ -6,6 +6,6 @@ export function productTypeToString(type: ProductEnum) {
         case "DESSERT":
             return "Десерт";
         case "GIFT":
-            return "Подарок";
+            return "Подарочные наборы";
     }
 }
