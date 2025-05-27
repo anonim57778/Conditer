@@ -33,7 +33,7 @@ export const files = createTable("files", {
 	createdAt: timestamp("created_at", { withTimezone: true })
 		.notNull()
 		.defaultNow(),
-  });
+});
 
 export const users = createTable("user", {
   id: varchar("id", { length: 255 })
@@ -66,7 +66,7 @@ export const categories = createTable("categories", {
   type: productTypesEnum("type").notNull(),
   isDeleted: boolean("is_deleted").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-})
+});
 
 export const products = createTable("products", {
   id: varchar("id", { length: 255 })
@@ -83,7 +83,43 @@ export const products = createTable("products", {
   priceFor8: integer("price_for_8").notNull(),
   isDeleted: boolean("is_deleted").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-})
+});
+
+export const orders = createTable("orders", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  address: varchar("address", { length: 255 }).notNull(),
+  comment: varchar("comment").notNull(),
+  totalPrice: integer("total_price").notNull(),
+  paymentId: varchar("payment_id", { length: 255 }).notNull(),
+  isDeleted: boolean("is_deleted").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const ordersRelations = relations(orders, ({ many }) => ({
+  products: many(orderProducts),
+}));
+
+export const orderProducts = createTable("order_products", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  orderId: varchar("order_id", { length: 255 }).references(() => orders.id).notNull(),
+  productId: varchar("product_id", { length: 255 }).references(() => products.id).notNull(),
+  quantity: integer("quantity").notNull(),
+  isDeleted: boolean("is_deleted").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const orderProductsRelations = relations(orderProducts, ({ one }) => ({
+  order: one(orders, { fields: [orderProducts.orderId], references: [orders.id] }),
+  product: one(products, { fields: [orderProducts.productId], references: [products.id] }),
+}));
 
 export const accounts = createTable(
   "account",
