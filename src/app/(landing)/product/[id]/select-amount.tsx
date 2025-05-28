@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useCartStore } from "~/app/store/cart-store";
 import { Button } from "~/components/ui/button";
-import { Product } from "~/lib/shared/types/product";
+import { type Product } from "~/lib/shared/types/product";
 import { cn } from "~/lib/utils";
 
 

@@ -4,7 +4,6 @@ import { FileSchema } from "~/lib/shared/types/file";
 import { IdSchema } from "~/lib/shared/types/utils";
 import {
 	createTRPCRouter,
-	protectedProcedure,
 	publicProcedure,
 } from "~/server/api/trpc";
 import { files } from "~/server/db/schema";

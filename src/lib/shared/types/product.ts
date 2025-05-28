@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { productTypesEnum } from "~/server/db/schema";
 import { EditFileSchema } from "./file";
-import { inferProcedureOutput } from "@trpc/server";
-import { AppRouter } from "~/server/api/root";
+import { type inferProcedureOutput } from "@trpc/server";
+import { type AppRouter } from "~/server/api/root";
 
 export const ProductSchema = z.object({
     name: z.string({

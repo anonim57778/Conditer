@@ -21,7 +21,7 @@ export default function ContactsPage() {
     return (
         <div className="container py-12 lg:py-32">
             <div className="lg:h-[512px] flex flex-col gap-6 justify-center items-center lg:flex-row lg:gap-12">
-                <Image src={dessert} alt="dessert" width={512} height={512}/>
+                <Image src={dessert as string} alt="dessert" width={512} height={512}/>
 
                 <div className="h-full flex flex-col gap-y-6 lg:justify-between">
                     <div className="flex flex-col gap-y-2">

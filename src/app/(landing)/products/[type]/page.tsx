@@ -1,7 +1,7 @@
 import { type ProductEnum } from "~/server/db/schema"
 import { api } from "~/trpc/server";
 import ProductList from "./products-list";
-import { SearchParams } from "nuqs";
+import { type SearchParams } from "nuqs";
 import { createSearchParamsCache } from "nuqs/server";
 import { filterParams } from "./filterParams";
 

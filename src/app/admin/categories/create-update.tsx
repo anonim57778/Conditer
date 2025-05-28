@@ -17,18 +17,16 @@ import { Input } from "~/components/ui/input";
 import {
 	Sheet,
 	SheetContent,
-	SheetFooter,
 	SheetHeader,
 	SheetTitle,
 	SheetTrigger,
 } from "~/components/ui/sheet";
-import { useToast } from "~/components/ui/use-toast";
-import { OnError } from "~/lib/shared/OnError";
 import { api } from "~/trpc/react";
-import { Category, CategorySchema } from "~/lib/shared/types/category";
+import { type Category, CategorySchema } from "~/lib/shared/types/category";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { productTypesEnum } from "~/server/db/schema";
 import { productTypeToString } from "~/lib/enums";
+import { toast } from "sonner";
 
 export default function CreateUpdateCategory({
 	category,
@@ -42,39 +40,25 @@ export default function CreateUpdateCategory({
 		defaultValues: category ? category : {}  as z.infer<typeof CategorySchema>
 	});
 
-	const { toast } = useToast();
-
 	const createMutation = api.category.create.useMutation({
 		onSuccess() {
-			toast({
-				title: "Категория успешно создана",
-			});
+			toast.success("Категория успешно создана");
 			form.reset();
 			setOpen(false);
 		},
 		onError(error) {
 			console.log(error.message);
-			toast({
-				title: "Категория не создана",
-				description: "Произошла ошибка при создании категории",
-				variant: "destructive",
-			});
+			toast.error("Категория не создана");
 		},
 	});
 
 	const updateMutation = api.category.update.useMutation({
 		onSuccess() {
-			toast({
-				title: "Категория успешно обновлена",
-			});
+			toast.success("Категория успешно обновлена");
 			setOpen(false);
 		},
 		onError() {
-			toast({
-				title: "Категория не обновлена",
-				description: "Произошла ошибка при обновлении категории",
-				variant: "destructive",
-			});
+			toast.error("Категория не обновлена");
 		},
 	});
 
@@ -103,7 +87,7 @@ export default function CreateUpdateCategory({
 				</SheetHeader>
 				<Form {...form}>
 					<form
-						onSubmit={form.handleSubmit(onSubmit, OnError(toast))}
+						onSubmit={form.handleSubmit(onSubmit)}
 						className="flex flex-col grow"
 					>
 						<div className="space-y-4 grow">

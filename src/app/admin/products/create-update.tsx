@@ -21,8 +21,6 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "~/components/ui/sheet";
-import { useToast } from "~/components/ui/use-toast";
-import { OnError } from "~/lib/shared/OnError";
 import { api } from "~/trpc/react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { productTypesEnum } from "~/server/db/schema";
@@ -33,6 +31,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 import { ConvertFiles } from "~/lib/client/file";
 import { Trash2 } from "lucide-react";
 import { Textarea } from "~/components/ui/textarea";
+import { toast } from "sonner";
 
 export default function CreateUpdateProduct({
 	product,
@@ -48,22 +47,15 @@ export default function CreateUpdateProduct({
 		defaultValues: product ? product : {}  as z.infer<typeof ProductSchema>
 	});
 
-	const { toast } = useToast();
 
 	const createMutation = api.product.create.useMutation({
 		onSuccess() {
-			toast({
-				title: "Продукт успешно создан",
-			});
+			toast.success("Продукт успешно создан");
 			form.reset();
 			setOpen(false);
 		},
 		onError() {
-			toast({
-				title: "Продукт не создан",
-				description: "Произошла ошибка при создании продукта",
-				variant: "destructive",
-			});
+			toast.error("Продукт не создан");
 		},
 	});
 
@@ -109,7 +101,7 @@ export default function CreateUpdateProduct({
 				</SheetHeader>
 				<Form {...form}>
 					<form
-						onSubmit={form.handleSubmit(onSubmit, OnError(toast))}
+						onSubmit={form.handleSubmit(onSubmit)}
 						className="flex flex-col grow space-y-4"
 					>
 						<div className="space-y-4 grow">

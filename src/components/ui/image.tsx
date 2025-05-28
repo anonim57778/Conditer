@@ -7,7 +7,7 @@ import { cn } from "~/lib/utils";
 import Loader from "./loader";
 
 const className =
-  "aspect-square flex items-center justify-center text-muted-foreground rounded-md" as const;
+  "aspect-square flex items-center justify-center text-muted-foreground rounded-md";
 
 export interface ImageProps extends NextImageProps {
   imageClassName?: string;
@@ -32,7 +32,7 @@ export default function S3Image({ src, imageClassName, ...props }: ImageProps) {
           )}
           <NextImage
             {...props}
-            src={`/api/file/${src}`}
+            src={`/api/file/${String(src)}`}
             className={cn("object-cover size-full", imageClassName)}
             onLoad={() => {
               setIsLoading(false);

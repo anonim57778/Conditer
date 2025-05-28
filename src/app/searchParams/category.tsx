@@ -1,5 +1,4 @@
-import { parseAsString, parseAsStringEnum } from "nuqs/server";
-import { productTypesEnum } from "~/server/db/schema";
+import { parseAsString } from "nuqs/server";
 
 export const categoryParser = {
     category: parseAsString.withDefault(""),

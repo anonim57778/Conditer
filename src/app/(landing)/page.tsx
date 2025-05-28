@@ -32,7 +32,7 @@ function AboutUsSection() {
 
     return (
         <div className="container py-12 lg:py-32 flex flex-col gap-6 lg:flex-row lg:justify-between lg:items-center lg:gap-12">
-            <Image src={about} alt="about" width={600} height={440}/>
+            <Image src={about as string} alt="about" width={600} height={440}/>
 
             <div className="flex flex-col gap-2">
                 <h2 className="text-2xl font-normal lg:text-5xl">О нас</h2>

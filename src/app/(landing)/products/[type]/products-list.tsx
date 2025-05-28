@@ -1,8 +1,8 @@
 "use client";
 import { productTypeToString } from "~/lib/enums";
-import { Category } from "~/lib/shared/types/category";
-import { Product } from "~/lib/shared/types/product";
-import { ProductEnum } from "~/server/db/schema";
+import { type Category } from "~/lib/shared/types/category";
+import { type Product } from "~/lib/shared/types/product";
+import { type ProductEnum } from "~/server/db/schema";
 import Filters from "./filter";
 import Link from "next/link";
 import S3Image from "~/components/ui/image";

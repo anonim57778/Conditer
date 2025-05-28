@@ -11,7 +11,7 @@ export const productRouter = createTRPCRouter({
     create: publicProcedure
         .input(ProductSchema)
         .mutation(async ({ input, ctx }) => {
-            let imageIds: string[] = [];
+            const imageIds: string[] = [];
             if (input.images) {
               const caller = createCaller(ctx);
               await Promise.all(input.images.map(async (image) => {

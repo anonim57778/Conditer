@@ -18,14 +18,14 @@ export default function Filters({
 
     useEffect(() => {
         if (categoriesFilter !== category) {
-            setCategories({ category: categoriesFilter });
+            void setCategories({ category: categoriesFilter });
         }
         console.log(categoriesFilter);
     }, [categoriesFilter, setCategories]);
 
     return (
         <div className="w-full lg:w-[231px]">
-            <Select value={categoriesFilter ?? ""} onValueChange={(value) => setCategoriesFilter(value as string)}>
+            <Select value={categoriesFilter ?? ""} onValueChange={(value) => setCategoriesFilter(value)}>
                 <SelectTrigger>
                     <SelectValue placeholder="Выберите категорию" />
                 </SelectTrigger>
