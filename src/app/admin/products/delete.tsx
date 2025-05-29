@@ -52,14 +52,14 @@ export default function DeleteProduct({
 				<AlertDialogHeader>
 					<AlertDialogTitle>Удалить продукт</AlertDialogTitle>
 					<AlertDialogCancel>
-                        <X className="size-6"/>
+                        <X className="size-6 text-primary"/>
                     </AlertDialogCancel>
 				</AlertDialogHeader>
 				<AlertDialogDescription>
 					Вы уверены, что хотите удалить продукт?
 				</AlertDialogDescription>
 				<AlertDialogFooter>
-					<AlertDialogAction className="p-3" onClick={() => deleteMutation.mutate({ id })}>
+					<AlertDialogAction className="p-3 w-full" onClick={() => deleteMutation.mutate({ id })}>
 						Удалить
 					</AlertDialogAction>
 				</AlertDialogFooter>

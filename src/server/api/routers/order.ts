@@ -1,5 +1,5 @@
 import { OrderSchema } from "~/lib/shared/types/order";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { orderProducts, orders, products } from "~/server/db/schema";
 import { eq, inArray } from "drizzle-orm";
 import { yookassa } from "~/server/yookassa";
@@ -60,7 +60,7 @@ export const orderRouter = createTRPCRouter({
 
             return payment.yookassaPayment.confirmation.confirmation_url!;
         }),
-    getAll: publicProcedure
+    getAll: protectedProcedure
         .query(async ({ ctx }) => {
             const ordersDb = await ctx.db.query.orders.findMany({
                 where: eq(orders.isDeleted, false),

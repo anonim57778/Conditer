@@ -52,14 +52,14 @@ export default function DeleteCategory({
 				<AlertDialogHeader>
 					<AlertDialogTitle>Удалить категорию</AlertDialogTitle>
 					<AlertDialogCancel>
-                        <X className="size-6"/>
+                        <X className="size-6 text-primary"/>
                     </AlertDialogCancel>
 				</AlertDialogHeader>
 				<AlertDialogDescription>
 					Вы уверены, что хотите удалить категорию?
 				</AlertDialogDescription>
 				<AlertDialogFooter>
-					<AlertDialogAction className="p-3" onClick={() => deleteMutation.mutate({ id })}>
+					<AlertDialogAction className="p-3 w-full" onClick={() => deleteMutation.mutate({ id })}>
 						Удалить
 					</AlertDialogAction>
 				</AlertDialogFooter>

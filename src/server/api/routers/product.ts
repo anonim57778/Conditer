@@ -1,5 +1,5 @@
 import { ProductSchema } from "~/lib/shared/types/product";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { createCaller } from "../root";
 import { products } from "~/server/db/schema";
 import { and, eq } from "drizzle-orm";
@@ -8,7 +8,7 @@ import { z } from "zod";
 
 
 export const productRouter = createTRPCRouter({
-    create: publicProcedure
+    create: protectedProcedure
         .input(ProductSchema)
         .mutation(async ({ input, ctx }) => {
             const imageIds: string[] = [];
@@ -51,7 +51,7 @@ export const productRouter = createTRPCRouter({
                 ),
             })
         }),
-    delete: publicProcedure
+    delete: protectedProcedure
         .input(IdSchema)
         .mutation(async ({ input, ctx }) => {
             await ctx.db.update(products).set({

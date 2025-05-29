@@ -1,5 +1,5 @@
 import { CategorySchema } from "~/lib/shared/types/category";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { categories, productTypesEnum } from "~/server/db/schema";
 import { IdSchema } from "~/lib/shared/types/utils";
 import { and, eq } from "drizzle-orm";
@@ -7,7 +7,7 @@ import { z } from "zod";
 
 
 export const categoryRouter = createTRPCRouter({
-    create: publicProcedure
+    create: protectedProcedure
         .input(CategorySchema)
         .mutation(async ({ input, ctx }) => {
             await ctx.db.insert(categories).values({
@@ -42,7 +42,7 @@ export const categoryRouter = createTRPCRouter({
 
             return category;
         }),
-    update: publicProcedure
+    update: protectedProcedure
         .input(CategorySchema.merge(IdSchema))
         .mutation(async ({ ctx, input }) => {
             const category = await ctx.db.query.categories.findFirst({
@@ -55,7 +55,7 @@ export const categoryRouter = createTRPCRouter({
 
             await ctx.db.update(categories).set(input).where(eq(categories.id, input.id))
         }),
-    delete: publicProcedure
+    delete: protectedProcedure
         .input(IdSchema)
         .mutation(async ({ ctx, input }) => {
             const category = await ctx.db.query.categories.findFirst({
