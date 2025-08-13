@@ -14,6 +14,7 @@ import { ZodError } from "zod";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 import { s3 } from "../s3";
+import { yookassa } from "../yookassa";
 
 /**
  * 1. CONTEXT
@@ -33,6 +34,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
   return {
     db,
     session,
+    yookassa,
     s3,
     ...opts,
   };

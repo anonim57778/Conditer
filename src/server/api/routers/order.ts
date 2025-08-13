@@ -3,11 +3,12 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { orderProducts, orders, products } from "~/server/db/schema";
 import { eq, inArray } from "drizzle-orm";
 import { yookassa } from "~/server/yookassa";
+import { z } from "zod";
 
 
 export const orderRouter = createTRPCRouter({
     create: publicProcedure
-        .input(OrderSchema)
+        .input(OrderSchema.merge(z.object({ products: z.array(z.object({ productId: z.string(), quantity: z.coerce.number() })) })))
         .mutation(async ({ ctx, input }) => {
             const productsDb = await ctx.db.query.products.findMany({
                 where: inArray(
@@ -26,7 +27,8 @@ export const orderRouter = createTRPCRouter({
 
             const totalPrice = productQuantity.reduce(
                 (acc, p) =>
-                acc + p.quantity === 4
+                acc + 
+                    p.quantity === 4
                     ? p.priceFor4
                     : p.quantity === 8
                     ? p.priceFor8
@@ -58,7 +60,11 @@ export const orderRouter = createTRPCRouter({
                 );
             });
 
-            return payment.yookassaPayment.confirmation.confirmation_url!;
+            if (!payment.yookassaPayment.confirmation.confirmation_url) {
+                throw new Error("Не удалось создать платеж");
+            }
+
+            return payment.yookassaPayment.confirmation.confirmation_url;
         }),
     getAll: protectedProcedure
         .query(async ({ ctx }) => {

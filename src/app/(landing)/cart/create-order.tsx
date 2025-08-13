@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { type z } from "zod";
 import { useCartStore } from "~/app/store/cart-store";
 import { Button } from "~/components/ui/button";
@@ -33,6 +34,9 @@ export default function CreateOrder({
     const createOrderMutation = api.order.create.useMutation({
         onSuccess(url) {
             router.push(url);
+        },
+        onError(error) {
+            toast.error(error.message || "Не удалось создать заказ");
         }
     })
 
@@ -57,9 +61,7 @@ export default function CreateOrder({
                 <DialogHeader>
                     <DialogTitle className="text-center">Оформить заказ</DialogTitle>
                 </DialogHeader>
-                <Form
-                    {...form}
-                >
+                <Form {...form} >
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
                         className="space-y-6"

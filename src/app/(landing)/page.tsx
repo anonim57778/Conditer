@@ -10,7 +10,6 @@ export default function LandingPage() {
             <MainSection/>
             <Carousel/>
             <ProductsList/>
-            <Carousel/>
             <AboutUsSection/>
         </div>
     )

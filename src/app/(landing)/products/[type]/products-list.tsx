@@ -25,30 +25,36 @@ export default function ProductList({
                 <Filters categories={categories}/>
             </div>
 
-            <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
-                {products.map((product, index) => (
-                    <Link key={index} href={`/product/${product.id}`} className="flex flex-col items-center">
-                        <S3Image
-                            src={product.imageIds[0] ?? ""}
-                            width={500}
-                            height={500}
-                            alt="Изображение"
-                            className="size-64 object-cover"
-                        />
+            {products.length == 0 ? (
+                <div className="py-20 flex items-center justify-center">
+                    <h1 className="text-primary text-center text-3xl lg:text-5xl">Продукты не найдены</h1>
+                </div>
+            ) : (
+                <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
+                    {products.map((product, index) => (
+                        <Link key={index} href={`/product/${product.id}`} className="flex flex-col items-center">
+                            <S3Image
+                                src={product.imageIds[0] ?? ""}
+                                width={500}
+                                height={500}
+                                alt="Изображение"
+                                className="size-64 object-cover"
+                            />
 
-                        <div className="flex flex-col gap-y-4">
-                            <div className="pb-4 border-b border-b-primary">
-                                <h1 className="font-medium text-xl">0{index + 1}</h1>
-                                <h2 className="font-normal text-2xl">{product.name}</h2>
+                            <div className="flex flex-col gap-y-4 w-full">
+                                <div className="pb-4 border-b border-b-primary">
+                                    <h1 className="font-medium text-xl">0{index + 1}</h1>
+                                    <h2 className="font-normal text-2xl">{product.name}</h2>
+                                </div>
+
+                                <p className="font-normal text-xl max-w-[569px]">{product.description}</p>
+
+                                <h1 className="font-bold text-xl">{product.priceFor1}₽</h1>
                             </div>
-
-                            <p className="font-normal text-xl">{product.description}</p>
-
-                            <h1 className="font-bold text-xl">{product.priceFor1}₽</h1>
-                        </div>
-                    </Link>
-                ))}
-            </div>
+                        </Link>
+                    ))}
+                </div>
+            )}
         </div>
     )
 }

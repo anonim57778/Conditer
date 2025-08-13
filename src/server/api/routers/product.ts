@@ -27,33 +27,82 @@ export const productRouter = createTRPCRouter({
                 imageIds,
             })
         }),
+    update: protectedProcedure
+        .input(ProductSchema.merge(IdSchema))
+        .mutation(async ({ ctx, input }) => {
+            const imageIds: string[] = [];
+            if (input.images) {
+              const caller = createCaller(ctx);
+              await Promise.all(input.images.map(async (image) => {
+                const id = await caller.file.create({
+                    ...image,
+                    b64: image.b64!,
+                });
+                imageIds.push(id.id);
+              }))
+            }
+
+            const product = await ctx.db.query.products.findFirst({
+                where: eq(products.id, input.id)
+            })
+
+            if (!product) {
+                throw new Error("Product not found")
+            }
+
+            await ctx.db.update(products).set({
+                ...input,
+                imageIds,
+            }).where(eq(products.id, input.id))
+        }),
     getAll: publicProcedure
         .input(z.object({
             type: z.enum(["DESSERT", "GIFT"]).optional(),
             category: z.string().optional(),
         }))
         .query(async ({ ctx, input }) => {
-            return await ctx.db.query.products.findMany({
+            const productsDb = await ctx.db.query.products.findMany({
                 where: and(
                     eq(products.isDeleted, false),
-                    input.type ? eq(products.type, input.type) : undefined,
-                    input.category ? eq(products.category, input.category) : undefined
+                    input?.type ? eq(products.type, input.type) : undefined,
+                    input?.category ? eq(products.category, input.category) : undefined
                 )
             })
+
+            return productsDb;
         }),
     getById: publicProcedure
         .input(IdSchema)
         .query(async ({ input, ctx }) => {
-            return await ctx.db.query.products.findFirst({
+            
+            const productDb = await ctx.db.query.products.findFirst({
                 where: and(
                     eq(products.id, input.id),
                     eq(products.isDeleted, false),
                 ),
             })
+
+            if (!productDb) {
+                throw new Error("Product not found");
+            }
+            
+            return productDb;
         }),
     delete: protectedProcedure
         .input(IdSchema)
         .mutation(async ({ input, ctx }) => {
+
+            const productDb = await ctx.db.query.products.findFirst({
+                where: and(
+                    eq(products.id, input.id),
+                    eq(products.isDeleted, false)
+                )
+            })
+
+            if (!productDb) {
+                throw new Error("Product not found")
+            }
+
             await ctx.db.update(products).set({
                 isDeleted: true,
             }).where(eq(products.id, input.id))

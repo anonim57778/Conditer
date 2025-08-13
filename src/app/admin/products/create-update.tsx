@@ -59,21 +59,16 @@ export default function CreateUpdateProduct({
 		},
 	});
 
-	// const updateMutation = api.category.update.useMutation({
-	// 	onSuccess() {
-	// 		toast({
-	// 			title: "Категория успешно обновлена",
-	// 		});
-	// 		setOpen(false);
-	// 	},
-	// 	onError() {
-	// 		toast({
-	// 			title: "Категория не обновлена",
-	// 			description: "Произошла ошибка при обновлении категории",
-	// 			variant: "destructive",
-	// 		});
-	// 	},
-	// });
+	const updateMutation = api.product.update.useMutation({
+		onSuccess() {
+			toast.success("Продукт успешно обновлен");
+			form.reset();
+			setOpen(false);
+		},
+		onError() {
+			toast.error("Продукт не обновлен");
+		},
+	});
 
 	const imagesArray = useFieldArray({
         control: form.control,
@@ -81,6 +76,13 @@ export default function CreateUpdateProduct({
     });
 
 	const onSubmit = (data: z.infer<typeof ProductSchema>) => {
+		if (product) {
+			updateMutation.mutate({
+				...data,
+				id: product.id,
+			});
+			return;
+		}
 		createMutation.mutate(data);
 	};
 

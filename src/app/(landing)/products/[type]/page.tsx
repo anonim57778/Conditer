@@ -4,6 +4,7 @@ import ProductList from "./products-list";
 import { type SearchParams } from "nuqs";
 import { createSearchParamsCache } from "nuqs/server";
 import { filterParams } from "./filterParams";
+import NotFound from "~/app/not-found";
 
 const paramsCache = createSearchParamsCache(filterParams);
 export default async function ProductsPage({
@@ -17,6 +18,10 @@ export default async function ProductsPage({
 }) {
     const type = (await params).type.toUpperCase() as ProductEnum;
     const param = paramsCache.parse(searchParams);
+
+    if (type != "DESSERT" && type != "GIFT") {
+        return <NotFound/>
+    }
 
     const products = await api.product.getAll({
         type,

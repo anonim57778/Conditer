@@ -15,10 +15,10 @@ export const ProductSchema = z.object({
     category: z.string({
         message: "Категория продукта не может быть пустой"
     }).min(1, "Категория продукта должна быть не короче 1 символа").max(255, "Категория продукта должна быть не более 255 символов"),
-    priceFor1: z.coerce.number(),
-    priceFor4: z.coerce.number(),
-    priceFor8: z.coerce.number(),
-    images: z.array(EditFileSchema),
+    priceFor1: z.coerce.number().positive("Цена должна быть положительной"),
+    priceFor4: z.coerce.number().positive("Цена должна быть положительной"),
+    priceFor8: z.coerce.number().positive("Цена должна быть положительной"),
+    images: z.array(EditFileSchema).min(1, "Необходимо добавить хотя бы одно изображение"),
 })
 
 export type Product = inferProcedureOutput<AppRouter["product"]["getAll"]>[number];

@@ -3,16 +3,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "~/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { useToast } from "~/components/ui/use-toast";
-import { OnError } from "~/lib/shared/OnError";
 
 export default function LoginPage() {
 
-  const toast = useToast();
 
   const formSchema = z.object({
     email: z
@@ -51,19 +49,11 @@ export default function LoginPage() {
         router.push("/admin/categories");
         router.refresh();
       } else {
-          toast.toast({
-            title: "Ошибка",
-            description: "Неверный логин или пароль",
-            variant: "destructive",
-          });
+          toast.error("Неверный логин или пароль");
       }
     } catch (error) {
       console.log(error);
-      toast.toast({
-        title: "Ошибка",
-        description: "Неверный логин или пароль",
-        variant: "destructive",
-      });
+      toast.error("Неверный логин или пароль");
     }
   };
 
@@ -71,7 +61,7 @@ export default function LoginPage() {
     <div className="h-screen flex w-full items-center justify-center p-6 lg:p-0">
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit, OnError(toast.toast))}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col space-y-3 h-full bg-gradient-to-br from-customGradientCardStart/10 to-customGradientCardEnd/10 lg:h-[400px] min-w-80 rounded-xl border border-white/20 p-6"
         >
           <h1 className="font-semibold text-center border-b border-b-white/20 pb-2 text-3xl">Вход</h1>

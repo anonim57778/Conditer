@@ -1,14 +1,24 @@
-import type { FieldErrors } from "react-hook-form";
-import type { useToast } from "~/components/ui/use-toast";
+import type { FieldError, FieldErrors } from "react-hook-form";
+import { toast } from "sonner";
 
-export function OnError(toast: ReturnType<typeof useToast>["toast"]) {
-	return (errors: FieldErrors) => {
-		const msg = errors[Object.keys(errors)[0] ?? "INVALID"]?.message;
-		if (msg) {
-			toast({
-				title: msg as string,
-				variant: "destructive",
-			});
-		}
-	};
+function GetErrorMessage(error: FieldError | undefined) {
+  if (!error) return;
+  if (error.message) return error.message;
+
+  const arrayError = (
+    error as unknown as Record<string, Record<string, FieldError>>
+  )[Object.keys(error)[0] ?? "invalid"];
+
+  if (!arrayError) return;
+
+  return GetErrorMessage(arrayError[Object.keys(arrayError)[0] ?? "invalid"]);
+}
+
+export function OnError(errors: FieldErrors) {
+  console.log({ errors });
+  const err = GetErrorMessage(
+    errors[Object.keys(errors)[0] ?? "invalid"] as FieldError,
+  );
+  if (!err) return;
+  toast.error(err);
 }

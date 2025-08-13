@@ -4,9 +4,8 @@ import type { Metadata } from "next";
 import { Pacifico } from "next/font/google";
 import localFont from "next/font/local";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-
-import { Toaster } from "~/components/ui/sonner";
 import { TRPCReactProvider } from "~/trpc/react";
+import { Toaster } from "sonner";
 
 const headingFont = Pacifico({
   subsets: ["latin", "cyrillic"],
@@ -40,7 +39,7 @@ export default function RootLayout({
           <NuqsAdapter>
             {children}
           </NuqsAdapter>
-          <Toaster />
+          <Toaster/>
         </TRPCReactProvider>
       </body>
     </html>

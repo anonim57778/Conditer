@@ -1,61 +1,60 @@
 "use client";
+
 import { Store, useStore } from "@tanstack/react-store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-
-export type ProductCart = {
-    id: string;
-    quantity: number;
-}
+export type CartProduct = { id: string; quantity: number };
 
 const store = new Store({
-    cart: [] as ProductCart[],
-})
+  cartProducts: [] as CartProduct[],
+});
 
 export function useCartStore() {
-    const cartProducts = useStore(store, (store) => store.cart);
+  const cartProducts = useStore(store, (s) => s.cartProducts);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-    function getLocalStorageProducts() {
-        const localStoregeProducts = localStorage.getItem("cart");
-        return JSON.parse(localStoregeProducts ?? "[]") as ProductCart[];
-    };
-
-    useEffect(() => {
-        store.setState(() => ({
-            cart: getLocalStorageProducts(),
-        }))
-    }, []);
-
-    useEffect(() => {
-        const cartProductsIds = cartProducts.map((product) => product.id).join(",");
-        const localeStorageIds = getLocalStorageProducts().map((product) => product.id).join(",");
-
-        if (cartProductsIds !== localeStorageIds) {
-            localStorage.setItem("cart", JSON.stringify(cartProducts));
-        }
-    }, [cartProducts])
-
-    return {
-        cartProducts,
-        addToCart: (id: string, quantity: number) => {
-            if (quantity == 0) {
-                store.setState((state) => ({
-                    cart: state.cart.filter((product) => product.id !== id),
-                }));
-            } else {
-                if (!cartProducts.find((product) => product.id === id)) {
-                    store.setState(() => ({
-                        cart: [...cartProducts, { id: id, quantity: quantity }],
-                    }));
-                    return;
-                }
-
-                store.setState((state) => ({
-                    cart: state.cart.map((product) =>
-                        product.id === id ? { ...product, quantity: quantity } : product
-                    ),
-                }))
-            }
-        }
+  // Загружаем корзину из localStorage только на клиенте
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("cartProducts") ?? "[]") as CartProduct[];
+      store.setState(() => ({ cartProducts: saved }));
+    } catch {
+      store.setState(() => ({ cartProducts: [] }));
     }
+    setIsLoaded(true);
+  }, []);
+
+  // Сохраняем корзину в localStorage при изменении
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem("cartProducts", JSON.stringify(cartProducts));
+    }
+  }, [cartProducts, isLoaded]);
+
+  return {
+    cartProducts,
+    isLoaded,
+    addToCart: (id: string, quantity: number) => {
+      store.setState((state) => {
+        const current = state.cartProducts;
+
+        if (quantity === 0) {
+          return { cartProducts: current.filter((p) => p.id !== id) };
+        }
+
+        if (!current.find((p) => p.id === id)) {
+          return { cartProducts: [...current, { id, quantity }] };
+        }
+
+        return {
+          cartProducts: current.map((p) =>
+            p.id === id ? { ...p, quantity } : p
+          ),
+        };
+      });
+    },
+    clearCart: () => {
+      store.setState(() => ({ cartProducts: [] }));
+    },
+  };
 }
