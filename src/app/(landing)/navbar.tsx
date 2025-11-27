@@ -7,7 +7,7 @@ import { SheetClose } from "~/components/ui/sheet";
 export default function Navbar() {
     const menu = [
         {
-            name: "Десерты",
+            name: "Десертики",
             url: "/products/dessert"
         },
         {
